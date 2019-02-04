@@ -1,0 +1,491 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/css/tokenfield-typeahead.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/css/bootstrap-tokenfield.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.css">
+    <!-- Mobile Responsive View -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- CSS -->
+    <style type="text/css">
+    body, html {
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+        background-color: #000;
+    }
+
+    #layout1 {
+        background-image: url("bg_red.png");
+        height: 100%; 
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+
+    #layout2 {
+        background-color: #000000;
+        color: #84847d;
+        font-size: 13px !important;
+        overflow: hidden;
+    }
+
+    button {
+        background-color: #84847d;
+        color: #FFFFFF;
+        width: 100px;
+        height: 36px;
+    }
+
+    .caixa {
+        padding: 2px 6px; margin:0px 0px 0px 4px; border-radius:6px; display: inline-block; margin-bottom: 3px;
+        background-color: #3e3e3e;
+    }
+
+    .main-image {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+        opacity: 1;
+        display: block;
+        transition: .5s ease;
+        backface-visibility: hidden;
+    }
+
+    .inner-image {
+        width: 150px;
+        height: auto;
+        object-fit: cover;
+        opacity: 1;
+        display: block;
+        transition: .5s ease;
+        backface-visibility: hidden;
+    }
+
+    .margin-top-15 {
+        margin-top: 15px;
+    }
+
+    .margin-left-50 {
+        margin-left: -50px;
+    }
+
+    .margin-left-15 {
+        margin-left: -15px;
+    }
+
+    .image-container:hover .main-image {
+        opacity: 0.7;
+    }
+
+    .unlike {
+        transition: .5s ease;
+        opacity: 0;
+        position: absolute;
+        top: 55%;
+        left: calc(25% - 200px);
+       /* transform: translate(-50%, -50%);
+        -ms-transform: translate(-50%, -50%);*/
+    }
+
+    .like {
+        transition: .5s ease;
+        opacity: 0;
+        position: absolute;
+        top: 55%;
+        left: 75%;
+        /*transform: translate(-50%, -50%);
+        -ms-transform: translate(-50%, -50%);*/
+    }
+    .but-container {
+        width: 100%;
+        height: calc(100% - 100px);
+        position: absolute;
+        z-index:1;
+
+    }
+
+    .but-container:hover .like {
+        opacity: 1;
+    }
+
+    .but-container:hover .unlike {
+        opacity: 1;
+    }
+
+    .tokenfield-typeahead [data-role="remove"]:after {
+        content: "";
+        padding: 0px 2px;
+    }
+
+    .tokenfield.form-control {
+        height: auto;
+        /*overflow: auto;*/
+        padding: 7px 0px 0px 5px;
+        vertical-align: middle;
+    }
+
+    div.token {
+        padding: 0px 4px 0px 0px;
+    }
+
+    div.token a.close {
+        display: none !important;
+    }
+
+    .tags-container {
+        padding: 20px 10px 10px 10px;
+        position: absolute;
+        z-index: 2;
+        background-color: black;
+        width: 100%;
+        box-shadow: 3px 12px 20px 2px #888888;
+    }
+
+    .image-container {               
+        overflow: hidden;
+        margin-top: 85px;
+        height: 100vh; 
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        object-fit: cover;
+    }
+
+    .container-search {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        margin-right: -50%;
+        transform: translate(-50%, -50%);
+        width: 50%;
+    }
+    
+    #stamp {
+       position: absolute;
+       width: 50px;
+       height: 50px;
+       left: calc(100% - 65px);
+       top: 10px;
+       z-index: 3;
+   }
+
+   #loader {
+       position: absolute;
+       left: calc(50% - 40px);
+       top: calc(50% + 10px);
+       z-index: 3;
+   }
+   #overlay {
+       background-color: #000000;
+       height: 100%;
+       width: 100%;
+       z-index: 999;
+       position: fixed;
+       opacity: 0.2;
+   }
+    </style>
+</head>
+
+<body>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.1/typeahead.bundle.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/bootstrap-tokenfield.js"></script>
+    <script type="text/javascript">
+    
+
+    $(function() {
+        // Show Layout 1 and hide Layout 2 when page load
+
+        // Tokenfield input
+        $('#tokenfield').tokenfield({
+            autocomplete: {
+                source: [],
+                delay: 100
+            },
+            delimiter: [" ", ","],
+            showAutocompleteOnFocus: true
+        });
+
+        // Block the input box
+        $("#btnSearch").click(function() {
+           var entered = $("#tokenfield").val()
+
+           // Check if tags have been entered
+           if (entered != "") {
+               $('#tokenfield-tokenfield').prop('disabled', true);
+               $("#btnSearch").prop('disabled', true);
+               $("#btnSearch").css("cursor", "default", 'opacity', 0.9);
+
+               var tokenString = ""
+               $('#tokenfield').tokenfield('disable');
+               var tokenChildren = $(".token").children()
+               for (var i=0;i<tokenChildren.length;i++){
+                   if ($(tokenChildren[i]).hasClass("token-label")){
+                       tokenString += $(tokenChildren[i]).html() + "+"
+                   }
+               }
+               tokenString = tokenString.substring(0, tokenString.length - 1)
+
+               // Get First Image
+               getFirstImage(tokenString);
+
+               // Hide Layout 1 and unhide Layout 2
+               // $('#layout1').hide();
+               // $('#layout2').show();
+
+               // scale and animate
+               scale(1.5, 10);
+           }
+        });
+
+
+        $("#like-image").click(function() {
+            // remove tags
+            
+            confirmImage("1")
+        });
+        $("#unlike-image").click(function() {
+            // remove tags
+            
+            confirmImage("0");
+        });
+
+
+        function drawMeta(jsonResult) {
+            console.log("NEW RESULT")
+            // CHANGE THE IMAGE BASED ON jsonResult.photo.url
+            $("#img").attr("src",jsonResult.flickr.url );
+
+            $('#author').append("<span class='caixa'>" + jsonResult.flickr.owner + "</span>");
+            $('#title').append("<span class='caixa'>" + jsonResult.flickr.title + "</span>");
+
+
+            for (i = 0; i < jsonResult.flickr.tags.length; i++) {
+                $('#image-tags').append("<span class='caixa'>" + jsonResult.flickr.tags[i] + "</span>");
+            }
+        }
+
+
+        jsonResult = {}
+        // FUNCTION TO BE CALLED WITH $("#btnSearch").click(..)
+        // tokenString comes from this function
+        function getFirstImage(tokenString){
+            console.log(tokenString)
+
+            // Add loader
+            // jQuery("body").prepend('<div id="loader"><img src="loader.svg"></div>');
+            addLoader()
+            $.ajax({
+                type: "GET",
+                url: "http://localhost:8080/words/" + tokenString,
+                data: jsonResult,
+                success: function(e) {
+                    jsonResult = e
+                    console.log("RESULT",jsonResult)
+                    // REMOVE PRELOADER
+                    //  TAKE OUT SEARCH BAR + BACKGROUND + ADD LAYOUT 2 (tags + image)
+                    $('#layout2').show();
+                    $('#layout1').hide();
+                    // jQuery("#loader").remove();
+                    drawMeta(e);
+                    removeLoader()
+                    
+                }
+            });
+        }
+
+
+        // FUNCTION TO BE CALLED FROM $("#like-image") or $("#unlike-image").click(...)
+        function confirmImage(vote) {
+            // BEFORE AJAX, DIM OUT IMAGE and PUT A PRELOADER (https://loading.io/spinners/dna/index.dna-spin-spiral-preloader.svg)
+            // Add loader
+            // jQuery("body").prepend('<div id="loader"><img src="loader.svg"></div>');
+            addLoader()
+            $.ajax({
+                type: "POST",
+                url: "http://localhost:8080/vote/" + vote,
+                contentType: 'application/json',
+
+                data: JSON.stringify(jsonResult),
+                success: function(e) {
+                    jsonResult = e
+
+                    console.log("RESULT",jsonResult)
+                    //  REMOVE preloader, UNDIM image
+                    // jQuery("#loader").remove();
+                    $(".caixa").remove()
+                    drawMeta(e);
+                    removeLoader()
+                }
+            });
+            //drawMeta(mockJson)
+            //console.log("VOTE",vote,mockJson)
+
+        }
+
+        
+        // Creating Image Ken Burns Effect With jQuery And CSS3 - kenburned
+        var scale = function(factor, time) {
+
+            $(".images img").animate({
+                'left':"-=50px",
+                'top':'-=50px'
+            })
+           
+            $(".images img").css({
+                "-webkit-transform": "scale(" + factor + ")", // Safari 3.1+, Chrome 
+                "-moz-transform": "scale(" + factor + ")", // Firefox 3.5+ 
+                "-ms-transform": "scale(" + factor + ")", // IE9+ 
+                "-o-transform": "scale(" + factor + ")", // Opera 10.50+ 
+                "transform": "scale(" + factor + ")",
+                "-webkit-transition": "-webkit-transform " + time + "s ease-in-out", // Safari 3.2+, Chrome 
+                "-moz-transition": "-webkit-transform " + time + "s ease-in-out", // Firefox 4-15 
+                "-o-transition": "-webkit-transform " + time + "s ease-in-out", // Opera 10.5–12.00 
+                "transition": "-webkit-transform " + time + "s ease-in-out" // Firefox 16+, Opera 12.50+ 
+            });
+        }
+
+        var maintainRatio = function() {
+            // Get measurements
+            var wrapperWidth = $(window).width();
+            var wrapperHeight = $(window).height();
+            var wrapperRatio = wrapperWidth / wrapperHeight;
+            var imageWidth = $(".images img").width();
+            var imageHeight = $(".images img").height();
+            var imageRatio = imageWidth / imageHeight;
+
+            // Set CSS to center image in wrapper
+            $(".images img").css({
+                "top": "50%",
+                "left": "50%"
+            });
+
+            // Set CSS properties of current image
+            if (wrapperRatio < imageRatio) {
+                $(".images img").css({
+                    //"height": wrapperHeight,
+                    "width": wrapperHeight * imageRatio,
+                    "margin-top": -(wrapperHeight / 2),
+                    "margin-left": -(wrapperHeight * imageRatio / 2)
+                });
+            }
+        }
+
+        $(window).load(function() {
+            // maximize and center image while maintaining image ratio
+            maintainRatio();  
+            removeLoader()         
+        })
+
+        $(window).resize(function() {
+            // maximize and center image while maintaining image ratio
+            console.log("IM")
+            //maintainRatio();
+        });
+
+        // Remove placeholder after tags is entered
+        var tagsTextbox = $('input[type="text"]');
+        tagsTextbox.change(function () {
+            tagsTextbox.removeAttr('placeholder');
+        });
+
+        // Hide loader
+        // jQuery("#loader").remove();
+
+        // Hide loader
+       function removeLoader( ){
+          
+          $('#overlay').css('opacity', 1);
+          $(".unlike").show();
+          $(".like").show(); 
+       }
+
+       // Show loader
+       function addLoader() {
+          $("body").prepend('<div id="loader"><img src="loader.svg"></div>');
+          $('#overlay').css('opacity', 0.2); 
+          $(".unlike").hide();
+          $(".like").hide();
+       } 
+
+       // addLoader()
+
+
+    });
+    // Create loader
+    
+   </script>
+   <div id="overlay">
+       <div id="layout1">
+           <div id="stamp">
+               <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><defs><style>.cls-1{fill:#e53323;}.cls-2{fill:#fff;}</style></defs><title>Logo_closer </title><circle class="cls-1" cx="25" cy="25.0001" r="24.4999" transform="translate(-9.3817 16.7599) rotate(-31.5224)"/><path class="cls-2" d="M37.0912,17.37l-.9456,4.7313h-.9925a6.8422,6.8422,0,0,0-3.5162.9181,5.1442,5.1442,0,0,0-1.8407,1.9823V40.7142H25.0236V25.2857c0-.65,3.5552-7.4364,11.3468-7.9157Z"/><path class="cls-2" d="M29.7911,14.2488a4.7367,4.7367,0,1,1-4.7364-4.7349A4.7379,4.7379,0,0,1,29.7911,14.2488Z"/></svg>
+            </div>
+            <div class="row">
+               <div class="container-search">
+                   <div class="col-xs-8 col-md-11">
+                       <input type="text" class="form-control" placeholder="Please insert tags" id="tokenfield" />
+                   </div>
+                   <div class="col-xs-4 col-md-1">
+                       <button id="btnSearch" class="btn btn-md">Search</button>
+                   </div>
+               </div>
+           </div>
+       </div>
+       <div id="layout2">
+           <div id="stamp">
+               <svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><defs><style>.cls-1{fill:#e53323;}.cls-2{fill:#fff;}</style></defs><title>Logo_closer </title><circle class="cls-1" cx="25" cy="25.0001" r="24.4999" transform="translate(-9.3817 16.7599) rotate(-31.5224)"/><path class="cls-2" d="M37.0912,17.37l-.9456,4.7313h-.9925a6.8422,6.8422,0,0,0-3.5162.9181,5.1442,5.1442,0,0,0-1.8407,1.9823V40.7142H25.0236V25.2857c0-.65,3.5552-7.4364,11.3468-7.9157Z"/><path class="cls-2" d="M29.7911,14.2488a4.7367,4.7367,0,1,1-4.7364-4.7349A4.7379,4.7379,0,0,1,29.7911,14.2488Z"/></svg>
+           </div>
+           <div class="tags-container">        
+               <div class="row">            
+                   <div class="col-xs-3 col-md-1">
+                       <p>TITLE:</p>
+                   </div>
+                   <div class="col-xs-3 col-md-5">
+                       <div id="title" class="margin-left-15"></div>
+                   </div>
+               </div>
+               <div class="row">
+                   <div class="col-xs-3 col-md-1">
+                       <p>IMAGE TAGS:</p>
+                   </div>
+                   <div class="col-xs-3 col-md-5">
+                       <div id="image-tags" class="margin-left-15"></div>
+                   </div>
+                   <div class="col-xs-3 col-md-1">
+                       <p>AUTHOR:</p>
+                   </div>
+                   <div class="col-xs-3 col-md-5">
+                       <div id="author" class="margin-left-50"></div>
+                   </div>
+               </div>
+           </div>
+           <div class="row">
+               <div class="col-md-12">
+                <div class="but-container">
+                    <div class="unlike">
+                           <img id="unlike-image" src="Unlike.png" class="inner-image">
+                       </div>
+                       <div class="like">
+                           <img id="like-image" src="Like.png" class="inner-image">
+                       </div>
+                   </div>
+                   <div class="image-container">
+                       <div class="images">
+                           <img class="main-image" id="img">
+                       </div>
+                       
+                   </div>
+
+               </div>
+           </div>
+      </div>
+    </div>
+</body>
+</html>
+    

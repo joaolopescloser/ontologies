@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/css/tokenfield-typeahead.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/css/bootstrap-tokenfield.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.css">
+    <!-- Mobile Responsive View -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- CSS -->
+    <style type="text/css">
+    body {
+        background-color: #000000;
+        color: #84847d;
+        font-size: 13px !important;
+        overflow-x: hidden;
+    }
+
+    button {
+        background-color: #84847d;
+        color: #FFFFFF;
+        width: 100px;
+        height: 36px;
+    }
+    .caixa {
+padding: 2px 6px; margin:0px 0px 0px 4px; border-radius:6px; display: inline-block; margin-bottom: 3px;
+background-color: #3e3e3e;
+}
+    .main-image {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+        opacity: 1;
+        display: block;
+        transition: .5s ease;
+        backface-visibility: hidden;
+    }
+
+    .inner-image {
+        width: 150px;
+        height: auto;
+        object-fit: cover;
+        opacity: 1;
+        display: block;
+        transition: .5s ease;
+        backface-visibility: hidden;
+    }
+
+    .margin-top-15 {
+        margin-top: 15px;
+    }
+
+    .margin-left-50 {
+        margin-left: -50px;
+    }
+
+    .margin-left-15 {
+        margin-left: -15px;
+    }
+
+    .image-container:hover .main-image {
+        opacity: 0.7;
+    }
+
+    .unlike {
+        transition: .5s ease;
+        opacity: 0;
+        position: absolute;
+        top: 65%;
+        left: 25%;
+        transform: translate(-50%, -50%);
+        -ms-transform: translate(-50%, -50%);
+    }
+
+    .like {
+        transition: .5s ease;
+        opacity: 0;
+        position: absolute;
+        top: 65%;
+        left: 75%;
+        transform: translate(-50%, -50%);
+        -ms-transform: translate(-50%, -50%);
+    }
+
+    .image-container:hover .like {
+        opacity: 1;
+    }
+
+    .image-container:hover .unlike {
+        opacity: 1;
+    }
+
+    .tokenfield-typeahead [data-role="remove"]:after {
+        content: "";
+        padding: 0px 2px;
+    }
+
+    .tokenfield.form-control {
+        height: auto;
+        overflow: auto;
+        padding: 7px 0px 0px 5px;
+        vertical-align: middle;
+    }
+
+    div.token {
+        padding: 0px 4px 0px 0px;
+    }
+
+    div.token a.close {
+        display: none !important;
+    }
+
+    .tags-container {
+        padding: 20px 10px 10px 10px;
+        position: absolute;
+        z-index: 2;
+        background-color: black;
+        margin-top: -15px;
+        width: 100%;
+        box-shadow: 3px 12px 20px 2px #888888;
+    }
+
+    .image-container {
+        max-height: calc(100vh - 15px);
+        overflow: hidden;
+    }
+    </style>
+</head>
+
+<body>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="https://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.1/typeahead.bundle.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-tokenfield/0.12.0/bootstrap-tokenfield.js"></script>
+    <script type="text/javascript">
+    var mockJson = {
+        "photo": {
+            "owner": "Automotive Rhythms",
+            "url": "https://farm5.staticflickr.com/4909/32117056558_2deea4df0a_o.jpg",
+            "tags": [
+                [
+                    "Toyota"
+                ],
+                [
+                    "RAV4"
+                ],
+                [
+                    "Carmel"
+                ],
+                [
+                    "Visit",
+                    "Carmel"
+                ],
+                [
+                    "Carmel",
+                    "Valley",
+                    "Ranch"
+                ],
+                [
+                    "Toyota",
+                    "RAV4"
+                ],
+                [
+                    "2019",
+                    "RAV4"
+                ],
+                [
+                    "2019",
+                    "Toyota",
+                    "RAV4"
+                ],
+                [
+                    "SUVs"
+                ],
+                [
+                    "Monterey"
+                ],
+                [
+                    "Visit",
+                    "Monterey"
+                ],
+                [
+                    "Japanese",
+                    "Cars"
+                ],
+                [
+                    "Japan"
+                ],
+                [
+                    "Hiking"
+                ],
+                [
+                    "Biking"
+                ],
+                [
+                    "Kayaking"
+                ],
+                [
+                    "Adventure"
+                ],
+                [
+                    "Fit",
+                    "Fathers"
+                ],
+                [
+                    "Fit",
+                    "Fam"
+                ],
+                [
+                    "JBL"
+                ],
+                [
+                    "JBL",
+                    "Audio"
+                ],
+                [
+                    "JBL",
+                    "Speakers"
+                ],
+                [
+                    "Travel",
+                    "Fitness"
+                ],
+                [
+                    "Active",
+                    "Lifestyle"
+                ],
+                [
+                    "Active",
+                    "Lifestyles"
+                ],
+                [
+                    "Vacation",
+                    "Fitness"
+                ],
+                [
+                    "Family",
+                    "Car"
+                ],
+                [
+                    "Family",
+                    "Cars"
+                ],
+                [
+                    "Car",
+                    "Family"
+                ],
+                [
+                    "Let’s",
+                    "go",
+                    "places"
+                ],
+                [
+                    "Automotive",
+                    "Rhythms"
+                ]
+            ],
+            "id": "32117056558",
+            "title": "2019 Toyota RAV4 Lifestyle Media Event"
+        },
+        "search": {
+            "usedTags": [
+                "car",
+                "family",
+                "car",
+                "family"
+            ],
+            "unusedTags": [
+                "xpto"
+            ]
+        }
+    }
+
+    $(function() {
+        
+        $("#like-image").click(function() {
+            confirmImage("yes")
+            alert("The image has been liked");
+        });
+        $("#unlike-image").click(function() {
+            confirmImage("no")
+            alert("The image has been unliked");
+        });
+        
+
+
+
+
+        drawMeta(mockJson)
+
+        function drawMeta(jsonResult) {
+            $('#author').append("<span class='caixa'>" + jsonResult.photo.owner + "</span>");
+            $('#title').append("<span class='caixa'>" + jsonResult.photo.title + "</span>");
+
+            for (i = 0; i < jsonResult.search.usedTags.length; i++) {
+                $('#tags').append("<span class='caixa'>" + jsonResult.search.usedTags[i] + "</span>");
+            }
+
+            for (i = 0; i < jsonResult.search.unusedTags.length; i++) {
+                $('#unused-tags').append("<span class='caixa'>" + jsonResult.search.unusedTags[i] + "</span>");
+            }
+
+            for (i = 0; i < jsonResult.photo.tags.length; i++) {
+                $('#image-tags').append("<span class='caixa'>" + jsonResult.photo.tags[i].join(' ') + "</span>");
+            }
+
+        }
+     
+
+        function confirmImage(vote) {
+            console.log(vote, jsonResult)
+            $.ajax({
+                type: "POST",
+                url: "https://buildingfuture.ngrok.io/confirmation/" + vote,
+                cache: false,
+                data: jsonResult,
+                success: function(e) {
+                    jsonResult = e
+                    drawMeta();
+                }
+            });
+
+        }
+
+        
+        // Creating Image Ken Burns Effect With jQuery And CSS3 - kenburned
+        var scale = function(factor, time) {
+            $(".images img").css({
+                "-webkit-transform": "scale(" + factor + ")", // Safari 3.1+, Chrome 
+                "-moz-transform": "scale(" + factor + ")", // Firefox 3.5+ 
+                "-ms-transform": "scale(" + factor + ")", // IE9+ 
+                "-o-transform": "scale(" + factor + ")", // Opera 10.50+ 
+                "transform": "scale(" + factor + ")",
+                "-webkit-transition": "-webkit-transform " + time + "s ease-in-out", // Safari 3.2+, Chrome 
+                "-moz-transition": "-webkit-transform " + time + "s ease-in-out", // Firefox 4-15 
+                "-o-transition": "-webkit-transform " + time + "s ease-in-out", // Opera 10.5–12.00 
+                "transition": "-webkit-transform " + time + "s ease-in-out" // Firefox 16+, Opera 12.50+ 
+            });
+        }
+
+        var maintainRatio = function() {
+            // Get measurements
+            var wrapperWidth = $(window).width();
+            var wrapperHeight = $(window).height();
+            var wrapperRatio = wrapperWidth / wrapperHeight;
+            var imageWidth = $(".images img").width();
+            var imageHeight = $(".images img").height();
+            var imageRatio = imageWidth / imageHeight;
+
+            // Set CSS to center image in wrapper
+            $(".images img").css({
+                "top": "50%",
+                "left": "50%"
+            });
+
+            // Set CSS properties of current image
+            if (wrapperRatio < imageRatio) {
+                $(".images img").css({
+                    "height": wrapperHeight,
+                    "width": wrapperHeight * imageRatio,
+                    "margin-top": -(wrapperHeight / 2),
+                    "margin-left": -(wrapperHeight * imageRatio / 2)
+                });
+            }
+        }
+
+        $(window).load(function() {
+            // maximize and center image while maintaining image ratio
+            maintainRatio();
+            // scale and animate
+            scale(1.5, 10);
+        })
+
+        $(window).resize(function() {
+            // maximize and center image while maintaining image ratio
+            maintainRatio();
+        });
+    });
+    </script>
+    <div class="tags-container margin-top-15">
+        <div class="row">
+            <div class="col-xs-8 col-md-11">
+                <input type="text" class="form-control" placeholder="Please insert tags" id="tokenfield" />
+            </div>
+            <div class="col-xs-4 col-md-1">
+                <button id="btnSearch" class="btn btn-md">Search</button>
+            </div>
+        </div>
+        
+        <div class="row">
+            
+            <div class="col-xs-3 col-md-1">
+                <p>TITLE:</p>
+            </div>
+            <div class="col-xs-3 col-md-5">
+                <div id="title" class="margin-left-50"></div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-3 col-md-1">
+                <p>IMAGE TAGS:</p>
+            </div>
+            <div class="col-xs-3 col-md-5">
+                <div id="image-tags" class="margin-left-15"></div>
+            </div>
+            <div class="col-xs-3 col-md-1">
+                <p>AUTHOR:</p>
+            </div>
+            <div class="col-xs-3 col-md-5">
+                <div id="author" class="margin-left-50"></div>
+            </div>
+        </div>
+    </div>
+    <div class="row margin-top-15">
+        <div class="col-md-12">
+            <div class="image-container">
+                <div class="images">
+                    <img src="car.jpeg" class="main-image">
+                </div>
+                    <div class="unlike">
+                        <img id="unlike-image" src="Unlike.png" class="inner-image">
+                </div>
+                        <div class="like">
+                            <img id="like-image" src="Like.png" class="inner-image">
+                </div>
+                        </div>
+                    </div>
+                </div>
+</body>
+
+</html>
